@@ -12,6 +12,16 @@ import java.util.List;
 
 public final class GraphBuilder {
 
+    private final Injector parentInjector;
+
+    public GraphBuilder() {
+        this.parentInjector = null;
+    }
+
+    private GraphBuilder(Injector parentInjector) {
+        this.parentInjector = parentInjector;
+    }
+
     private static final class Input<T> {
         private final Key<T> key;
         private final T value;
@@ -32,6 +42,7 @@ public final class GraphBuilder {
 
     private final List<Input<?>> inputs = new ArrayList<>();
     private final List<Class<?>> nodes = new ArrayList<>();
+    private final List<SubGraph> subGraphs = new ArrayList<>();
 
     public <T> GraphBuilder addInput(T value) {
         return addInput(value, (Class) value.getClass());
@@ -67,34 +78,38 @@ public final class GraphBuilder {
         return this;
     }
 
+    public GraphBuilder addSubGraph(SubGraph subGraph) {
+        subGraphs.add(subGraph);
+        return this;
+    }
+
     public Graph build() {
+        final List<Class<?>> inputsClasses = new ArrayList<>();
+        inputs.stream().map(Input::getValue).map(Object::getClass).forEach(inputsClasses::add);
+        subGraphs.stream().map(Object::getClass).forEach(inputsClasses::add);
+
         final Module module = binder -> {
             inputs.forEach(input -> registerInputInBinder(binder, input));
             nodes.forEach(node -> registerNodeInBinder(binder, node));
-            allowJITOnlyForNodes(binder);
+            subGraphs.forEach(subGraph -> registerSubGraphInBinder(binder, subGraph));
+            binder.requireExplicitBindings();
+//            if (parentInjector == null) {
+//                allowJITOnlyForNodes(binder, inputsClasses);
+//            }
         };
-        final Injector injector = Guice.createInjector(module);
+        final Injector injector = parentInjector == null
+                ? Guice.createInjector(module)
+                : parentInjector.createChildInjector(module);
+
+        subGraphs.forEach(subGraph -> {
+            final GraphBuilder subGraphBuilder = new GraphBuilder(injector);
+            subGraph.configure(subGraphBuilder);
+            subGraphBuilder.inputs.stream().map(Input::getValue).map(Object::getClass).forEach(inputsClasses::add);
+            inputsClasses.add(subGraph.getClass());
+            subGraph.setGraph(subGraphBuilder.build());
+        });
 
         return new Graph(injector);
-    }
-
-    private void allowJITOnlyForNodes(Binder binder) {
-        binder.bindListener(
-                new AbstractMatcher<TypeLiteral<?>>() {
-                    @Override
-                    public boolean matches(TypeLiteral<?> typeLiteral) {
-                        return !Node.class.isAssignableFrom(typeLiteral.getRawType());
-                    }
-                },
-                new TypeListener() {
-                    @Override
-                    public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
-                        if (inputs.stream().noneMatch(input -> input.getValue().getClass().equals(type.getRawType()))) {
-                            encounter.addError("JIT is only allowed for subclasses of Node");
-                        }
-                    }
-                }
-        );
     }
 
     private <T> void registerInputInBinder(Binder binder, Input<T> input) {
@@ -103,5 +118,26 @@ public final class GraphBuilder {
 
     private void registerNodeInBinder(Binder binder, Class<?> node) {
         binder.bind(node).in(Singleton.class);
+    }
+
+    private void registerSubGraphInBinder(Binder binder, SubGraph subGraph) {
+        binder.bind((Class) subGraph.getClass()).toInstance(subGraph);
+    }
+
+    private void allowJITOnlyForNodes(Binder binder, List<Class<?>> explicitInputs) {
+        binder.bindListener(
+                new AbstractMatcher<TypeLiteral<?>>() {
+                    @Override
+                    public boolean matches(TypeLiteral<?> typeLiteral) {
+                        return !Node.class.isAssignableFrom(typeLiteral.getRawType()) && !explicitInputs.contains(typeLiteral.getRawType());
+                    }
+                },
+                new TypeListener() {
+                    @Override
+                    public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter) {
+                        encounter.addError("JIT is only allowed for subclasses of Node. Class: " + type.getRawType());
+                    }
+                }
+        );
     }
 }

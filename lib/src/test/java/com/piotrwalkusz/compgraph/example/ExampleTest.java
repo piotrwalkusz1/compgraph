@@ -2,6 +2,8 @@ package com.piotrwalkusz.compgraph.example;
 
 import com.piotrwalkusz.compgraph.Graph;
 import com.piotrwalkusz.compgraph.GraphBuilder;
+import com.piotrwalkusz.compgraph.example.graph.AdditionalTaxes2021;
+import com.piotrwalkusz.compgraph.example.graph.AdditionalTaxes2022;
 import com.piotrwalkusz.compgraph.example.input.CalculationDate;
 import com.piotrwalkusz.compgraph.example.input.Income;
 import com.piotrwalkusz.compgraph.example.input.TaxpayerId;
@@ -31,6 +33,8 @@ public class ExampleTest {
                 .addInputWithAnnotation(new IncomeTax(BigDecimal.valueOf(1200)), PreviousYear.class)
                 .addInput(new TaxService())
                 .addInput(new BillServiceImpl(), BillService.class)
+                .addSubGraph(new AdditionalTaxes2021())
+                .addSubGraph(new AdditionalTaxes2022())
                 .addNode(IncomeTax.class)
                 .build();
 
