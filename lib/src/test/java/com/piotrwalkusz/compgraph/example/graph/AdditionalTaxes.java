@@ -1,6 +1,6 @@
 package com.piotrwalkusz.compgraph.example.graph;
 
-import com.piotrwalkusz.compgraph.GraphBuilder;
+import com.piotrwalkusz.compgraph.Graph;
 import com.piotrwalkusz.compgraph.SubGraph;
 import com.piotrwalkusz.compgraph.example.input.Year;
 import com.piotrwalkusz.compgraph.example.node.AdditionalHouseTax;
@@ -11,18 +11,9 @@ import lombok.AllArgsConstructor;
 import java.math.BigDecimal;
 
 @AllArgsConstructor
-public class AdditionalTaxes extends SubGraph {
+public abstract class AdditionalTaxes extends SubGraph {
 
     private final int year;
-
-    @Override
-    public void configure(GraphBuilder graphBuilder) {
-        graphBuilder
-                .addInput(new Year(year))
-                .addNode(AdditionalHouseTax.class)
-                .addNode(AdditionalIncomeTax.class)
-                .addNode(AdditionalTaxRate.class);
-    }
 
     public BigDecimal getAdditionalHouseTax() {
         return getGraph().evaluate(AdditionalHouseTax.class);
@@ -34,5 +25,10 @@ public class AdditionalTaxes extends SubGraph {
 
     public BigDecimal getAdditionalTaxRate() {
         return getGraph().evaluate(AdditionalTaxRate.class);
+    }
+
+    @Override
+    protected void setupGraph(Graph graph) {
+        graph.addInput(new Year(year));
     }
 }

@@ -18,5 +18,10 @@ public abstract class Node<T> implements DisplayableValue {
         return cachedValue;
     }
 
-    protected abstract T evaluate();    
+    protected abstract T evaluate();
+
+    @Override
+    public String getDisplayedValue() {
+        return getValue().toString();
+    }
 }

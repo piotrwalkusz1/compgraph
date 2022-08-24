@@ -1,16 +1,14 @@
 package com.piotrwalkusz.compgraph;
 
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.Setter;
+
 public abstract class SubGraph {
 
+    @Getter(AccessLevel.PROTECTED)
+    @Setter(AccessLevel.PACKAGE)
     private Graph graph;
 
-    protected Graph getGraph() {
-        return graph;
-    }
-
-    void setGraph(Graph graph) {
-        this.graph = graph;
-    }
-
-    protected abstract void configure(GraphBuilder graphBuilder);
+    protected abstract void setupGraph(Graph graph);
 }
