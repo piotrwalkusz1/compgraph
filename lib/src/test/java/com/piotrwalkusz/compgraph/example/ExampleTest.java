@@ -32,4 +32,21 @@ public class ExampleTest {
 
         graph.evaluate(IncomeTax.class);
     }
+
+    @Test
+    void test2() {
+        final Graph graph = new Graph()
+                .addInput(new CalculationDate(LocalDate.of(2022, 1, 1)))
+                .addInput(new Income(BigDecimal.valueOf(30000)))
+                .addInput(new TaxpayerId(12))
+                .addInput(new Income(BigDecimal.valueOf(1223)), PreviousYear.class)
+                .addInput(new IncomeTax(BigDecimal.valueOf(1200)), PreviousYear.class)
+                .addInput(new TaxService())
+                .addInput(new BillServiceImpl())
+                .addSubGraph(new AdditionalTaxes2021())
+                .addSubGraph(new AdditionalTaxes2022());
+
+        graph.evaluate(IncomeTax.class);
+        graph.draw();
+    }
 }

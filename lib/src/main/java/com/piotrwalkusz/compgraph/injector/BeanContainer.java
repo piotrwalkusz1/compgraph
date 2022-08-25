@@ -13,13 +13,8 @@ public class BeanContainer {
         beans.add(bean);
     }
 
-    public <T> Optional<T> getInstance(BeanMatcher<T> beanMatcher) {
-        return getBean(beanMatcher)
-                .map(Bean::getInstance);
-    }
-
-    public <T> Optional<Bean<? extends T>> getBean(BeanMatcher<T> beanMatcher) {
-        final List<Bean<? extends T>> beans = getBeans(beanMatcher);
+    public <T> Optional<Bean<T>> getBean(BeanMatcher<T> beanMatcher) {
+        final List<Bean<T>> beans = getBeans(beanMatcher);
         if (beans.size() > 1) {
             throw new IllegalArgumentException("More than one bean found for matcher " + beanMatcher);
         }
@@ -27,10 +22,14 @@ public class BeanContainer {
         return beans.stream().findFirst();
     }
 
-    public <T> List<Bean<? extends T>> getBeans(BeanMatcher<T> beanMatcher) {
+    public <T> List<Bean<T>> getBeans(BeanMatcher<T> beanMatcher) {
         return beans.stream()
                 .filter(beanMatcher::match)
-                .map(bean -> (Bean<? extends T>) bean)
+                .map(bean -> (Bean<T>) bean)
                 .collect(Collectors.toList());
+    }
+
+    public List<Bean<?>> getBeans() {
+        return new ArrayList<>(beans);
     }
 }
