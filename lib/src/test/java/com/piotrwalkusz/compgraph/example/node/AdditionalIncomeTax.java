@@ -18,9 +18,4 @@ public class AdditionalIncomeTax extends Node<BigDecimal> {
     protected BigDecimal evaluate() {
         return additionalTaxRate.getValue().multiply(BigDecimal.valueOf(calculationDate.getValue().getYear() > 2020 ? 0.3 : 0.2));
     }
-
-    @Override
-    public String getDisplayedValue() {
-        return getValue().toString();
-    }
 }

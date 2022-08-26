@@ -1,4 +1,4 @@
-package com.piotrwalkusz.compgraph.example.simple.input;
+package com.piotrwalkusz.compgraph.examples.simple.input;
 
 import lombok.Value;
 

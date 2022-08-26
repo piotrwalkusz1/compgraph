@@ -55,7 +55,11 @@ public class Injector {
     }
 
     public <T> T getInstance(Class<T> type) {
-        return getInstance(new KeyMatcher<>(type));
+        return getInstance(type, null);
+    }
+
+    public <T> T getInstance(Class<T> type, Class<? extends Annotation> annotationType) {
+        return getInstance(new KeyMatcher<>(type, annotationType));
     }
 
     public <T> T getInstance(KeyMatcher<T> keyMatcher) {

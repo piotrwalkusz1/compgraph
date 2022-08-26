@@ -27,9 +27,4 @@ public abstract class UnpaidBillsAmount extends Node<BigDecimal> {
     protected BigDecimal evaluate() {
         return billService.sumUnpaidBillsInYear(taxpayerId.getValue(), calculationDate.getValue().getYear() - 1, billType);
     }
-
-    @Override
-    public String getDisplayedValue() {
-        return getValue().toString();
-    }
 }

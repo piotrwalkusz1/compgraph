@@ -44,10 +44,6 @@ public final class Graph {
         return this;
     }
 
-    public Graph addSubGraph(Class<? extends Annotation> subGraphQualifier) {
-        return addSubGraph(subGraphQualifier, null);
-    }
-
     public Graph addSubGraph(Class<? extends Annotation> subGraphQualifier, Consumer<Graph> setupGraph) {
         if (!ReflectionUtils.hasAnnotation(subGraphQualifier, List.of(SubGraphQualifier.class))) {
             throw new IllegalArgumentException("Annotation must have meta annotation @SubGraphQualifier");
@@ -72,8 +68,20 @@ public final class Graph {
         return new HashMap<>(subGraphs);
     }
 
-    public <T> T evaluate(Class<? extends Node<T>> node) {
-        return injector.getInstance(node).getValue();
+    public <T> T evaluate(Class<? extends Node<T>> type) {
+        return getInstance(type).getValue();
+    }
+
+    public <T> T evaluate(Class<? extends Node<T>> type, Class<? extends Annotation> annotationType) {
+        return getInstance(type, annotationType).getValue();
+    }
+
+    public <T> T getInstance(Class<? extends T> type) {
+        return injector.getInstance(type);
+    }
+
+    public <T> T getInstance(Class<? extends T> type, Class<? extends Annotation> annotationType) {
+        return injector.getInstance(type, annotationType);
     }
 
     public void draw() {

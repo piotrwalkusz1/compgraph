@@ -14,9 +14,4 @@ public class AdditionalHouseTax extends Node<BigDecimal> {
     protected BigDecimal evaluate() {
         return additionalTaxRate.getValue().multiply(BigDecimal.valueOf(0.5));
     }
-
-    @Override
-    public String getDisplayedValue() {
-        return getValue().toString();
-    }
 }

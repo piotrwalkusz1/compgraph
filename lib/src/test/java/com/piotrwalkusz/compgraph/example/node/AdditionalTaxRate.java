@@ -15,9 +15,4 @@ public class AdditionalTaxRate extends Node<BigDecimal> {
     protected BigDecimal evaluate() {
         return BigDecimal.valueOf(year.getValue() - 2000).max(BigDecimal.ZERO);
     }
-
-    @Override
-    public String getDisplayedValue() {
-        return getValue().toString();
-    }
 }

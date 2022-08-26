@@ -1,14 +1,8 @@
 package com.piotrwalkusz.compgraph.example.input;
 
-import com.piotrwalkusz.compgraph.DisplayableValue;
 import lombok.Value;
 
 @Value
-public class Year implements DisplayableValue {
+public class Year {
     int value;
-
-    @Override
-    public String getDisplayedValue() {
-        return Integer.toString(value);
-    }
 }

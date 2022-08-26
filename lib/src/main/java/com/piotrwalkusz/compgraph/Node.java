@@ -1,6 +1,6 @@
 package com.piotrwalkusz.compgraph;
 
-public abstract class Node<T> implements DisplayableValue {
+public abstract class Node<T> {
 
     private boolean evaluated;
     private T cachedValue;
@@ -24,9 +24,4 @@ public abstract class Node<T> implements DisplayableValue {
     }
 
     protected abstract T evaluate();
-
-    @Override
-    public String getDisplayedValue() {
-        return getValue().toString();
-    }
 }

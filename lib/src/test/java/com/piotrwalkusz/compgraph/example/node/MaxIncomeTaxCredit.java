@@ -19,9 +19,4 @@ public class MaxIncomeTaxCredit extends Node<BigDecimal> {
     protected BigDecimal evaluate() {
         return taxService.getMaxIncomeTaxCredit(calculationDate.getValue());
     }
-
-    @Override
-    public String getDisplayedValue() {
-        return getValue().toString();
-    }
 }

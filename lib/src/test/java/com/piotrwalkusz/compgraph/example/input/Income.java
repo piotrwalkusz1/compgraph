@@ -1,16 +1,10 @@
 package com.piotrwalkusz.compgraph.example.input;
 
-import com.piotrwalkusz.compgraph.DisplayableValue;
 import lombok.Value;
 
 import java.math.BigDecimal;
 
 @Value
-public class Income implements DisplayableValue {
+public class Income {
     BigDecimal value;
-
-    @Override
-    public String getDisplayedValue() {
-        return value.toString();
-    }
 }

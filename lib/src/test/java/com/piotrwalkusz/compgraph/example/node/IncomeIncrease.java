@@ -20,9 +20,4 @@ public class IncomeIncrease extends Node<BigDecimal> {
     protected BigDecimal evaluate() {
         return income.getValue().subtract(incomeInPreviousYear.getValue());
     }
-
-    @Override
-    public String getDisplayedValue() {
-        return getValue().toString();
-    }
 }

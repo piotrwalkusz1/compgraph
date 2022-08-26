@@ -61,7 +61,7 @@ public class GraphPainter {
             beansToClustersIds.put(bean, clusterId);
         }
         final GraphvizNode node = new GraphvizNode(nodeId, getNodeLabel(bean));
-        node.setShape(bean.getInstance() instanceof SubGraph ? "plain" : "box");
+        node.setShape("box");
 
         return node;
     }
@@ -70,10 +70,6 @@ public class GraphPainter {
         final StringBuilder label = new StringBuilder();
         label.append("<<FONT>");
         label.append(escapeHtml(bean.getInstance().getClass().getSimpleName()));
-        if (bean.getInstance() instanceof DisplayableValue) {
-            label.append("<BR/>");
-            label.append(escapeHtml(((DisplayableValue) bean.getInstance()).getDisplayedValue()));
-        }
         label.append("</FONT>>");
 
         return label.toString();

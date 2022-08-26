@@ -19,9 +19,4 @@ public class IncomeTaxRate extends Node<BigDecimal> {
     protected BigDecimal evaluate() {
         return taxService.getIncomeTaxRateService(calculationDate.getValue());
     }
-
-    @Override
-    public String getDisplayedValue() {
-        return getValue().toString();
-    }
 }

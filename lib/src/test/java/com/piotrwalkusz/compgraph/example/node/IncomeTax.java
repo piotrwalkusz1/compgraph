@@ -55,9 +55,4 @@ public class IncomeTax extends Node<BigDecimal> {
         }
         return incomeTax;
     }
-
-    @Override
-    public String getDisplayedValue() {
-        return getValue().toString();
-    }
 }
