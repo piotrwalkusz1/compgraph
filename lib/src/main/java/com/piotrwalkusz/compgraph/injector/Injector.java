@@ -1,8 +1,6 @@
 package com.piotrwalkusz.compgraph.injector;
 
 import com.piotrwalkusz.compgraph.injector.provider.CreatingProvider;
-import com.piotrwalkusz.compgraph.utils.ClassUtils;
-import com.piotrwalkusz.compgraph.utils.ObjectAndType;
 
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
@@ -32,14 +30,13 @@ public class Injector {
         this.bindings = new ArrayList<>();
     }
 
-    public <T> void bind(Object instance) {
-        final ObjectAndType<T> objectAndType = ClassUtils.getObjectAndType(instance);
-        bind(objectAndType.getType()).toInstance(objectAndType.getObject());
+    public void bind(Object instance) {
+        bind(instance, null);
     }
 
+    @SuppressWarnings({"unchecked"})
     public <T> void bind(T instance, Class<? extends Annotation> annotationType) {
-        final ObjectAndType<T> objectAndType = ClassUtils.getObjectAndType(instance);
-        bind(objectAndType.getType(), annotationType).toInstance(instance);
+        bind((Class<T>) instance.getClass(), annotationType).toInstance(instance);
     }
 
     public <T> Binder<T> bind(Class<T> type) {
