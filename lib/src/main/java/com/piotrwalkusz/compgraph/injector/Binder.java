@@ -1,8 +1,8 @@
 package com.piotrwalkusz.compgraph.injector;
 
-import com.piotrwalkusz.compgraph.injector.provider.ConstantBeanProvider;
-import com.piotrwalkusz.compgraph.injector.provider.LinkedBeanProvider;
-import com.piotrwalkusz.compgraph.injector.provider.RegisteredTypeBeanProvider;
+import com.piotrwalkusz.compgraph.injector.provider.ConstantProvider;
+import com.piotrwalkusz.compgraph.injector.provider.CreatingProvider;
+import com.piotrwalkusz.compgraph.injector.provider.LinkedProvider;
 import lombok.AllArgsConstructor;
 
 import java.lang.annotation.Annotation;
@@ -14,18 +14,18 @@ public class Binder<T> {
     private final Injector injector;
 
     public void toInstance(T instance) {
-        injector.addBinding(new Binding<>(key, new ConstantBeanProvider<>(new Bean<>(instance))));
+        injector.addBinding(new Binding<>(key, new ConstantProvider<>(new Bean<>(instance))));
     }
 
     public void toSelf() {
-        injector.addBinding(new Binding<>(key, new RegisteredTypeBeanProvider<>(key.getType(), injector)));
+        injector.addBinding(new Binding<>(key, new CreatingProvider<>(key.getType(), injector)));
     }
 
     public void to(Class<? extends T> type) {
-        injector.addBinding(new Binding<>(key, new LinkedBeanProvider<>(new KeyMatcher<>(type), injector)));
+        injector.addBinding(new Binding<>(key, new LinkedProvider<>(KeyMatcher.of(type), injector)));
     }
 
     public void to(Class<? extends T> type, Class<? extends Annotation> annotationType) {
-        injector.addBinding(new Binding<>(key, new LinkedBeanProvider<>(new KeyMatcher<>(type, annotationType), injector)));
+        injector.addBinding(new Binding<>(key, new LinkedProvider<>(KeyMatcher.of(type, annotationType), injector)));
     }
 }

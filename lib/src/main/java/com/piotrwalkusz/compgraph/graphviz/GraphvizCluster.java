@@ -1,14 +1,14 @@
 package com.piotrwalkusz.compgraph.graphviz;
 
-import lombok.Data;
+import lombok.Value;
 
 import java.util.List;
 
-@Data
+@Value
 public class GraphvizCluster {
 
-    private final int id;
-    private final String label;
-    private final List<GraphvizNode> nodes;
-    private final List<GraphvizCluster> clusters;
+    int id;
+    String label;
+    List<GraphvizNode> nodes;
+    List<GraphvizCluster> clusters;
 }

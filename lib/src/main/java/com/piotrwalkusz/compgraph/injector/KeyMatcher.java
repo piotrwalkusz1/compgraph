@@ -1,20 +1,25 @@
 package com.piotrwalkusz.compgraph.injector;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.lang.annotation.Annotation;
 import java.util.Objects;
 
-@Data
-@AllArgsConstructor
+@Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class KeyMatcher<T> {
 
-    private final Class<T> type;
-    private final Class<? extends Annotation> annotationType;
+    Class<T> type;
+    Class<? extends Annotation> annotationType;
 
-    public KeyMatcher(Class<T> type) {
-        this(type, null);
+    public static <T> KeyMatcher<T> of(Class<T> type) {
+        return of(type, null);
+    }
+
+    public static <T> KeyMatcher<T> of(Class<T> type, Class<? extends Annotation> annotationType) {
+        return new KeyMatcher<>(type, annotationType);
     }
 
     public boolean match(Key<?> key) {
@@ -22,6 +27,6 @@ public class KeyMatcher<T> {
     }
 
     public Key<T> getKeyThatSatisfyMatcher() {
-        return new Key<>(type, annotationType);
+        return Key.of(type, annotationType);
     }
 }

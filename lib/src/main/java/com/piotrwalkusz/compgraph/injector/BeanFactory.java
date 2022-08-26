@@ -58,9 +58,10 @@ public class BeanFactory {
 
     protected KeyMatcher<?> getKeyMatcher(Field field) {
         final Optional<Annotation> qualifierAnnotation = getQualifierAnnotation(field);
-        return qualifierAnnotation
-                .map(annotation -> new KeyMatcher<>(field.getType(), annotation.annotationType()))
-                .orElseGet(() -> new KeyMatcher(field.getType()));
+        if (qualifierAnnotation.isPresent()) {
+            return KeyMatcher.of(field.getType(), qualifierAnnotation.get().annotationType());
+        }
+        return KeyMatcher.of(field.getType());
     }
 
     private Optional<Annotation> getQualifierAnnotation(Field field) {

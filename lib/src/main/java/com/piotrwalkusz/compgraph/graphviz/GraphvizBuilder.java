@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class GraphvizBuilder {
+public final class GraphvizBuilder {
 
     private final List<GraphvizNode> nodes = new ArrayList<>();
     private final List<GraphvizEdge> edges = new ArrayList<>();
@@ -40,10 +40,6 @@ public class GraphvizBuilder {
         content.append("digraph G {");
         newLine();
         indentation++;
-        // TODO
-//        indent();
-//        content.append("compound=\"true\"");
-//        newLine();
     }
 
     private void endGraph() {
@@ -62,9 +58,7 @@ public class GraphvizBuilder {
         content.append(" ");
         final Map<String, String> attributes = new HashMap<>();
         attributes.put("label", node.getLabel());
-        if (node.getShape() != null) {
-            attributes.put("shape", node.getShape());
-        }
+        attributes.put("shape", "box");
         appendAttributes(attributes);
         newLine();
     }
@@ -78,10 +72,6 @@ public class GraphvizBuilder {
         appendNodeIdentifier(edge.getTailNodeId());
         content.append(" -> ");
         appendNodeIdentifier(edge.getHeadNodeId());
-        if (edge.getHeadClusterId() != null) {
-            content.append(" ");
-            appendAttributes(Map.of("lhead", getClusterIdentifier(edge.getHeadClusterId())));
-        }
         newLine();
     }
 
@@ -97,9 +87,9 @@ public class GraphvizBuilder {
         newLine();
         indentation++;
         indent();
-        content.append("label=\"");
+        content.append("label=<");
         content.append(cluster.getLabel());
-        content.append("\"");
+        content.append(">");
         appendNodes(cluster.getNodes());
         appendClusters(cluster.getClusters());
         indentation--;

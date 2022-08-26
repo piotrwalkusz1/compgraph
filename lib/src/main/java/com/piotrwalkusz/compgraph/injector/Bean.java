@@ -1,19 +1,22 @@
 package com.piotrwalkusz.compgraph.injector;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Value
-@AllArgsConstructor
-public class Bean<T> {
+@Getter
+public final class Bean<T> {
 
     public Bean(T instance) {
-        this(instance, new ArrayList<>());
+        this(instance, null);
     }
 
-    T instance;
-    List<Bean<?>> dependencies;
+    public Bean(T instance, List<Bean<?>> dependencies) {
+        this.instance = instance;
+        this.dependencies = dependencies == null ? new ArrayList<>() : new ArrayList<>(dependencies);
+    }
+
+    private final T instance;
+    private final List<Bean<?>> dependencies;
 }

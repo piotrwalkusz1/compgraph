@@ -21,7 +21,6 @@ public class GraphPainter {
     private final Graph graph;
     private final GraphvizBuilder graphvizBuilder = new GraphvizBuilder();
     private final Map<Bean<?>, Integer> beansToNodesIds = new HashMap<>();
-    private final Map<Bean<?>, Integer> beansToClustersIds = new HashMap<>();
     private final AtomicInteger nextNodeId = new AtomicInteger(1);
     private final AtomicInteger nextClusterId = new AtomicInteger(0);
 
@@ -32,7 +31,7 @@ public class GraphPainter {
     @SneakyThrows
     public void draw() {
         final List<Bean<?>> beans = graph.getInjector().getExistingBeans();
-        beans.forEach(bean -> graphvizBuilder.addNode(buildNode(bean, null)));
+        beans.forEach(bean -> graphvizBuilder.addNode(buildNode(bean)));
         graph.getSubGraphsByQualifiers().forEach((qualifier, subGraph) -> graphvizBuilder.addCluster(buildCluster(qualifier.getSimpleName(), subGraph)));
         buildEdges(graph).forEach(graphvizBuilder::addEdge);
 
@@ -45,7 +44,7 @@ public class GraphPainter {
         final int clusterId = nextClusterId.getAndIncrement();
         final List<Bean<?>> beans = graph.getInjector().getExistingBeans();
         final List<GraphvizNode> nodes = beans.stream()
-                .map(bean -> buildNode(bean, clusterId))
+                .map(this::buildNode)
                 .collect(Collectors.toList());
         final List<GraphvizCluster> clusters = graph.getSubGraphsByQualifiers().entrySet().stream()
                 .map(qualifierAndSubGraph -> buildCluster(qualifierAndSubGraph.getKey().getSimpleName(), qualifierAndSubGraph.getValue()))
@@ -54,25 +53,14 @@ public class GraphPainter {
         return new GraphvizCluster(clusterId, name, nodes, clusters);
     }
 
-    private GraphvizNode buildNode(Bean<?> bean, Integer clusterId) {
+    private GraphvizNode buildNode(Bean<?> bean) {
         final int nodeId = nextNodeId.getAndIncrement();
         beansToNodesIds.put(bean, nodeId);
-        if (clusterId != null) {
-            beansToClustersIds.put(bean, clusterId);
-        }
-        final GraphvizNode node = new GraphvizNode(nodeId, getNodeLabel(bean));
-        node.setShape("box");
-
-        return node;
+        return new GraphvizNode(nodeId, getNodeLabel(bean));
     }
 
     private String getNodeLabel(Bean<?> bean) {
-        final StringBuilder label = new StringBuilder();
-        label.append("<<FONT>");
-        label.append(escapeHtml(bean.getInstance().getClass().getSimpleName()));
-        label.append("</FONT>>");
-
-        return label.toString();
+        return "<<FONT>" + escapeHtml(bean.getInstance().getClass().getSimpleName()) + "</FONT>>";
     }
 
     private List<GraphvizEdge> buildEdges(Graph graph) {
@@ -86,7 +74,7 @@ public class GraphPainter {
         final List<GraphvizEdge> result = new ArrayList<>();
         final int nodeId = beansToNodesIds.get(bean);
         for (Bean<?> dependency : bean.getDependencies()) {
-            result.add(new GraphvizEdge(nodeId, beansToNodesIds.get(dependency), beansToClustersIds.get(dependency)));
+            result.add(new GraphvizEdge(nodeId, beansToNodesIds.get(dependency)));
         }
 
         return result;

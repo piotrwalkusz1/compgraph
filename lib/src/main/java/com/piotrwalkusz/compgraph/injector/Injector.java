@@ -1,6 +1,6 @@
 package com.piotrwalkusz.compgraph.injector;
 
-import com.piotrwalkusz.compgraph.injector.provider.RegisteredTypeBeanProvider;
+import com.piotrwalkusz.compgraph.injector.provider.CreatingProvider;
 import com.piotrwalkusz.compgraph.utils.ClassUtils;
 import com.piotrwalkusz.compgraph.utils.ObjectAndType;
 
@@ -43,11 +43,11 @@ public class Injector {
     }
 
     public <T> Binder<T> bind(Class<T> type) {
-        return new Binder<>(new Key<>(type), this);
+        return new Binder<>(Key.of(type), this);
     }
 
     public <T> Binder<T> bind(Class<T> type, Class<? extends Annotation> annotationType) {
-        return new Binder<>(new Key<>(type, annotationType), this);
+        return new Binder<>(Key.of(type, annotationType), this);
     }
 
     void addBinding(Binding<?> binding) {
@@ -59,7 +59,7 @@ public class Injector {
     }
 
     public <T> T getInstance(Class<T> type, Class<? extends Annotation> annotationType) {
-        return getInstance(new KeyMatcher<>(type, annotationType));
+        return getInstance(KeyMatcher.of(type, annotationType));
     }
 
     public <T> T getInstance(KeyMatcher<T> keyMatcher) {
@@ -132,7 +132,7 @@ public class Injector {
             }
         }
 
-        final RegisteredTypeBeanProvider<T> provider = new RegisteredTypeBeanProvider<>(keyMatcher.getType(), this);
+        final CreatingProvider<T> provider = new CreatingProvider<>(keyMatcher.getType(), this);
         // Invoke Provider.get() to check if instance can be created successfully
         provider.get();
         final Binding<T> binding = new Binding<T>(keyMatcher.getKeyThatSatisfyMatcher(), provider);

@@ -1,11 +1,10 @@
 package com.piotrwalkusz.compgraph.graphviz;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class GraphvizNode {
 
-    private final int id;
-    private final String label;
-    private String shape;
+    int id;
+    String label;
 }

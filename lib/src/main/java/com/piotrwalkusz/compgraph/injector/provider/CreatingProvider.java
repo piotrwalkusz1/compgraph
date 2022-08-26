@@ -6,13 +6,13 @@ import com.piotrwalkusz.compgraph.injector.Injector;
 
 import java.util.Optional;
 
-public class RegisteredTypeBeanProvider<T> implements BeanProvider<T> {
+public final class CreatingProvider<T> implements BeanProvider<T> {
 
     private final Class<T> type;
     private final Injector injector;
     private Bean<T> bean;
 
-    public RegisteredTypeBeanProvider(Class<T> type, Injector injector) {
+    public CreatingProvider(Class<T> type, Injector injector) {
         this.type = type;
         this.injector = injector;
     }

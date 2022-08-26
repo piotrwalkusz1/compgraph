@@ -1,18 +1,23 @@
 package com.piotrwalkusz.compgraph.injector;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.lang.annotation.Annotation;
 
-@Data
-@AllArgsConstructor
+@Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class Key<T> {
 
-    public Key(Class<T> type) {
-        this(type, null);
+    Class<T> type;
+    Class<? extends Annotation> annotationType;
+
+    public static <T> Key<T> of(Class<T> type) {
+        return of(type, null);
     }
 
-    private final Class<T> type;
-    private final Class<? extends Annotation> annotationType;
+    public static <T> Key<T> of(Class<T> type, Class<? extends Annotation> annotationType) {
+        return new Key<>(type, annotationType);
+    }
 }
