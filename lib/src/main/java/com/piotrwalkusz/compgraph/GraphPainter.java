@@ -32,7 +32,7 @@ public class GraphPainter {
     public void draw() {
         final List<Bean<?>> beans = graph.getInjector().getExistingBeans();
         beans.forEach(bean -> graphvizBuilder.addNode(buildNode(bean)));
-        graph.getSubGraphsByQualifiers().forEach((qualifier, subGraph) -> graphvizBuilder.addCluster(buildCluster(qualifier.getSimpleName(), subGraph)));
+        graph.getSubgraphsByQualifiers().forEach((qualifier, subgraph) -> graphvizBuilder.addCluster(buildCluster(qualifier.getSimpleName(), subgraph)));
         buildEdges(graph).forEach(graphvizBuilder::addEdge);
 
         final PrintWriter out = new PrintWriter("abc.dot", StandardCharsets.UTF_8);
@@ -46,8 +46,8 @@ public class GraphPainter {
         final List<GraphvizNode> nodes = beans.stream()
                 .map(this::buildNode)
                 .collect(Collectors.toList());
-        final List<GraphvizCluster> clusters = graph.getSubGraphsByQualifiers().entrySet().stream()
-                .map(qualifierAndSubGraph -> buildCluster(qualifierAndSubGraph.getKey().getSimpleName(), qualifierAndSubGraph.getValue()))
+        final List<GraphvizCluster> clusters = graph.getSubgraphsByQualifiers().entrySet().stream()
+                .map(qualifierAndSubgraph -> buildCluster(qualifierAndSubgraph.getKey().getSimpleName(), qualifierAndSubgraph.getValue()))
                 .collect(Collectors.toList());
 
         return new GraphvizCluster(clusterId, name, nodes, clusters);
@@ -66,7 +66,7 @@ public class GraphPainter {
     private List<GraphvizEdge> buildEdges(Graph graph) {
         final List<GraphvizEdge> result = new ArrayList<>();
         graph.getInjector().getExistingBeans().forEach(bean -> result.addAll(buildEdges(bean)));
-        graph.getSubGraphs().forEach(subGraph -> result.addAll(buildEdges(subGraph)));
+        graph.getSubgraphs().forEach(subgraph -> result.addAll(buildEdges(subgraph)));
         return result;
     }
 

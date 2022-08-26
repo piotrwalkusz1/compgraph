@@ -1,11 +1,11 @@
 package com.piotrwalkusz.compgraph.example.subgraph;
 
-import com.piotrwalkusz.compgraph.SubGraphQualifier;
+import com.piotrwalkusz.compgraph.SubgraphQualifier;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-@SubGraphQualifier
+@SubgraphQualifier
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Year2021 {
 }

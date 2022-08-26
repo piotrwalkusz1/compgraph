@@ -28,8 +28,8 @@ public class ExampleTest {
                 .addInput(new IncomeTax(BigDecimal.valueOf(1200)), PreviousYear.class)
                 .addInput(new TaxService())
                 .addInput(new BillServiceImpl())
-                .addSubGraph(Year2021.class, subGraph -> subGraph.addInput(new Year(2021)))
-                .addSubGraph(Year2022.class, subGraph -> subGraph.addInput(new Year(2022)));
+                .addSubgraph(Year2021.class, subgraph -> subgraph.addInput(new Year(2021)))
+                .addSubgraph(Year2022.class, subgraph -> subgraph.addInput(new Year(2022)));
 
         graph.evaluate(IncomeTax.class);
     }
@@ -44,8 +44,8 @@ public class ExampleTest {
                 .addInput(new IncomeTax(BigDecimal.valueOf(1200)), PreviousYear.class)
                 .addInput(new TaxService())
                 .addInput(new BillServiceImpl())
-                .addSubGraph(Year2021.class, subGraph -> subGraph.addInput(new Year(2021)))
-                .addSubGraph(Year2022.class, subGraph -> subGraph.addInput(new Year(2022)));
+                .addSubgraph(Year2021.class, subgraph -> subgraph.addInput(new Year(2021)))
+                .addSubgraph(Year2022.class, subgraph -> subgraph.addInput(new Year(2022)));
 
         graph.evaluate(IncomeTax.class);
         graph.draw();

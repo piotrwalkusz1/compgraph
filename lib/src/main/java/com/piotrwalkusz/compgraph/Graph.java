@@ -15,7 +15,7 @@ public final class Graph {
 
     @Getter(AccessLevel.PACKAGE)
     private final GraphInjector injector;
-    private final Map<Class<? extends Annotation>, Graph> subGraphs;
+    private final Map<Class<? extends Annotation>, Graph> subgraphs;
 
     public Graph() {
         this(null);
@@ -23,7 +23,7 @@ public final class Graph {
 
     public Graph(Graph parentGraph) {
         this.injector = new GraphInjector(this, parentGraph == null ? null : parentGraph.injector);
-        this.subGraphs = new HashMap<>();
+        this.subgraphs = new HashMap<>();
     }
 
     public Graph addInput(Object input) {
@@ -44,28 +44,28 @@ public final class Graph {
         return this;
     }
 
-    public Graph addSubGraph(Class<? extends Annotation> subGraphQualifier, Consumer<Graph> setupGraph) {
-        if (!ReflectionUtils.hasAnnotation(subGraphQualifier, List.of(SubGraphQualifier.class))) {
-            throw new IllegalArgumentException("Annotation must have meta annotation @SubGraphQualifier");
+    public Graph addSubgraph(Class<? extends Annotation> subgraphQualifier, Consumer<Graph> setupGraph) {
+        if (!ReflectionUtils.hasAnnotation(subgraphQualifier, List.of(SubgraphQualifier.class))) {
+            throw new IllegalArgumentException("Annotation must have meta annotation @SubgraphQualifier");
         }
-        final Graph subGraph = new Graph(this);
+        final Graph subgraph = new Graph(this);
         if (setupGraph != null) {
-            setupGraph.accept(subGraph);
+            setupGraph.accept(subgraph);
         }
-        subGraphs.put(subGraphQualifier, subGraph);
+        subgraphs.put(subgraphQualifier, subgraph);
         return this;
     }
 
-    public Graph getSubGraph(Class<? extends Annotation> subGraphQualifier) {
-        return subGraphs.get(subGraphQualifier);
+    public Graph getSubgraph(Class<? extends Annotation> subgraphQualifier) {
+        return subgraphs.get(subgraphQualifier);
     }
 
-    public List<Graph> getSubGraphs() {
-        return new ArrayList<>(subGraphs.values());
+    public List<Graph> getSubgraphs() {
+        return new ArrayList<>(subgraphs.values());
     }
 
-    public Map<Class<? extends Annotation>, Graph> getSubGraphsByQualifiers() {
-        return new HashMap<>(subGraphs);
+    public Map<Class<? extends Annotation>, Graph> getSubgraphsByQualifiers() {
+        return new HashMap<>(subgraphs);
     }
 
     public <T> T evaluate(Class<? extends Node<T>> type) {

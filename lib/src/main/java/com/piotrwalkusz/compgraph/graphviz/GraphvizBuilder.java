@@ -21,8 +21,8 @@ public final class GraphvizBuilder {
         edges.add(edge);
     }
 
-    public void addCluster(GraphvizCluster subGraph) {
-        clusters.add(subGraph);
+    public void addCluster(GraphvizCluster subgraph) {
+        clusters.add(subgraph);
     }
 
     public String build() {
