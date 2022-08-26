@@ -1,6 +1,7 @@
 package com.piotrwalkusz.compgraph.injector;
 
 import com.piotrwalkusz.compgraph.utils.ReflectionUtils;
+import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 
 import javax.inject.Inject;
@@ -12,16 +13,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public class BeanCreator {
+@AllArgsConstructor
+public class BeanFactory {
 
     private static final List<Class<? extends Annotation>> SUPPORTED_INJECT_ANNOTATIONS = List.of(Inject.class);
     private static final List<Class<? extends Annotation>> SUPPORTED_QUALIFIER_ANNOTATIONS = List.of(Qualifier.class);
 
-    private final BeanCreatorContext context;
-
-    public BeanCreator(BeanCreatorContext context) {
-        this.context = context;
-    }
+    protected final Injector injector;
 
     @SneakyThrows
     public <T> Bean<T> createBean(Class<T> type) {
@@ -46,19 +44,19 @@ public class BeanCreator {
 
     @SneakyThrows
     private Bean<?> injectToField(Object object, Field field) {
-        final BeanMatcher<?> beanMatcher = getBeanMatcher(field);
-        final Bean<?> bean = context.getBean(beanMatcher);
+        final KeyMatcher<?> keyMatcher = getKeyMatcher(field);
+        final Bean<?> bean = injector.getBean(keyMatcher);
         field.setAccessible(true);
         field.set(object, bean.getInstance());
 
         return bean;
     }
 
-    private BeanMatcher<?> getBeanMatcher(Field field) {
+    private KeyMatcher<?> getKeyMatcher(Field field) {
         final Optional<Annotation> qualifierAnnotation = getQualifierAnnotation(field);
         return qualifierAnnotation
-                .map(annotation -> new BeanMatcher(field.getType(), annotation.annotationType()))
-                .orElseGet(() -> new BeanMatcher<>(field.getType()));
+                .map(annotation -> new KeyMatcher<>(field.getType(), annotation.annotationType()))
+                .orElseGet(() -> new KeyMatcher(field.getType()));
     }
 
     private Optional<Annotation> getQualifierAnnotation(Field field) {

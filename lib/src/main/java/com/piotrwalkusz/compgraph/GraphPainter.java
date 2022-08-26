@@ -28,7 +28,7 @@ public class GraphPainter {
 
     @SneakyThrows
     public void draw() {
-        final List<Bean<?>> beans = graph.getInjector().getBeans();
+        final List<Bean<?>> beans = graph.getInjector().getExistingBeans();
         beans.forEach(bean -> {
             if (bean.getInstance() instanceof SubGraph) {
                 graphvizBuilder.addCluster(buildCluster((Bean<SubGraph>) bean));
@@ -50,7 +50,7 @@ public class GraphPainter {
 
         nodes.add(buildNode(root, clusterId));
 
-        for (Bean<?> bean : root.getInstance().getGraph().getInjector().getBeans()) {
+        for (Bean<?> bean : root.getInstance().getGraph().getInjector().getExistingBeans()) {
             if (bean.getInstance() instanceof SubGraph) {
                 clusters.add(buildCluster((Bean<SubGraph>) bean));
             } else {
@@ -76,7 +76,7 @@ public class GraphPainter {
     private String getNodeLabel(Bean<?> bean) {
         final StringBuilder label = new StringBuilder();
         label.append("<<FONT>");
-        label.append(escapeHtml(bean.getType().getSimpleName()));
+        label.append(escapeHtml(bean.getInstance().getClass().getSimpleName()));
         if (bean.getInstance() instanceof DisplayableValue) {
             label.append("<BR/>");
             label.append(escapeHtml(((DisplayableValue) bean.getInstance()).getDisplayedValue()));
@@ -96,7 +96,7 @@ public class GraphPainter {
     private List<GraphvizEdge> buildEdges(Bean<?> bean) {
         final List<GraphvizEdge> result = new ArrayList<>();
         if (bean.getInstance() instanceof SubGraph) {
-            final List<Bean<?>> beans = ((SubGraph) bean.getInstance()).getGraph().getInjector().getBeans();
+            final List<Bean<?>> beans = ((SubGraph) bean.getInstance()).getGraph().getInjector().getExistingBeans();
             result.addAll(buildEdges(beans));
         } else {
             final int nodeId = beansToNodesIds.get(bean);

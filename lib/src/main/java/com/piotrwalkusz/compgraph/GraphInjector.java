@@ -1,7 +1,8 @@
 package com.piotrwalkusz.compgraph;
 
-import com.piotrwalkusz.compgraph.injector.Bean;
+import com.piotrwalkusz.compgraph.injector.Binding;
 import com.piotrwalkusz.compgraph.injector.Injector;
+import com.piotrwalkusz.compgraph.injector.KeyMatcher;
 
 public class GraphInjector extends Injector {
 
@@ -14,10 +15,10 @@ public class GraphInjector extends Injector {
     }
 
     @Override
-    protected <T> Bean<T> createBean(Class<T> type) {
-        if (!Node.class.isAssignableFrom(type)) {
-            throw new IllegalArgumentException(String.format("Cannot create instance of type %s. Only instance of Node can be created.", type));
+    protected <T> Binding<T> createJustInTimeBinding(KeyMatcher<T> keyMatcher) {
+        if (Node.class.isAssignableFrom(keyMatcher.getType()) && keyMatcher.getAnnotationType() == null) {
+            return super.createJustInTimeBinding(keyMatcher);
         }
-        return super.createBean(type);
+        throw new IllegalArgumentException(String.format("Cannot create instance of type %s. Only instance of Node can be created.", keyMatcher.getType()));
     }
 }

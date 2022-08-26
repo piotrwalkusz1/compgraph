@@ -25,12 +25,12 @@ public final class Graph {
     }
 
     public Graph addInput(Object input, Class<? extends Annotation> annotationType) {
-        injector.addInstance(input, annotationType);
+        injector.bind(input, annotationType);
         return this;
     }
 
     public Graph addSubGraph(SubGraph subGraph) {
-        injector.addInstance(subGraph);
+        injector.bind(subGraph);
         subGraph.setGraph(new Graph(this));
         subGraph.setupGraph(subGraph.getGraph());
         return this;
