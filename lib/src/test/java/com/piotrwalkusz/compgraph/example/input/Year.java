@@ -1,10 +1,10 @@
 package com.piotrwalkusz.compgraph.example.input;
 
-import com.piotrwalkusz.compgraph.Input;
+import com.piotrwalkusz.compgraph.DisplayableValue;
 import lombok.Value;
 
 @Value
-public class Year implements Input {
+public class Year implements DisplayableValue {
     int value;
 
     @Override
