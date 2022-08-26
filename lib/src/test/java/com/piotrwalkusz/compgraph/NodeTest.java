@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 public class NodeTest {
 
@@ -25,6 +26,18 @@ public class NodeTest {
         protected String evaluate() {
             counter++;
             return "NODE_EVALUATION_RESULT";
+        }
+    }
+
+    public static final class MockNodeThatEvaluateToNull extends Node<String> {
+
+        @Getter
+        private int counter = 0;
+
+        @Override
+        protected String evaluate() {
+            counter++;
+            return null;
         }
     }
 
@@ -50,12 +63,33 @@ public class NodeTest {
     }
 
     @Test
+    void shouldNotInvokeEvaluateMethodSecondTimeAndReturnCachedValueEvenIfValueIsNull() {
+        final MockNodeThatEvaluateToNull node = new MockNodeThatEvaluateToNull();
+
+        node.getValue();
+        final String value = node.getValue();
+
+        assertNull(value);
+        assertEquals(1, node.getCounter());
+    }
+
+    @Test
     void shouldNotInvokeEvaluateMethodAndReturnValueFromConstructor() {
         final MockNode node = new MockNode(NODE_FIX_VALUE);
 
         final String value = node.getValue();
 
         assertEquals(NODE_FIX_VALUE, value);
+        assertEquals(0, node.getCounter());
+    }
+
+    @Test
+    void shouldNotInvokeEvaluateMethodAndReturnValueFromConstructorEvenIfValueIsNull() {
+        final MockNode node = new MockNode(null);
+
+        final String value = node.getValue();
+
+        assertNull(value);
         assertEquals(0, node.getCounter());
     }
 }
