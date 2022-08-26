@@ -9,7 +9,10 @@ import lombok.SneakyThrows;
 
 import java.io.PrintWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -20,7 +23,7 @@ public class GraphPainter {
     private final Map<Bean<?>, Integer> beansToNodesIds = new HashMap<>();
     private final Map<Bean<?>, Integer> beansToClustersIds = new HashMap<>();
     private final AtomicInteger nextNodeId = new AtomicInteger(1);
-    private final AtomicInteger nextClusterId = new AtomicInteger(1);
+    private final AtomicInteger nextClusterId = new AtomicInteger(0);
 
     public GraphPainter(Graph graph) {
         this.graph = graph;
@@ -29,36 +32,26 @@ public class GraphPainter {
     @SneakyThrows
     public void draw() {
         final List<Bean<?>> beans = graph.getInjector().getExistingBeans();
-        beans.forEach(bean -> {
-            if (bean.getInstance() instanceof SubGraph) {
-                graphvizBuilder.addCluster(buildCluster((Bean<SubGraph>) bean));
-            } else {
-                graphvizBuilder.addNode(buildNode(bean, null));
-            }
-        });
-        buildEdges(beans).forEach(graphvizBuilder::addEdge);
+        beans.forEach(bean -> graphvizBuilder.addNode(buildNode(bean, null)));
+        graph.getSubGraphsByQualifiers().forEach((qualifier, subGraph) -> graphvizBuilder.addCluster(buildCluster(qualifier.getSimpleName(), subGraph)));
+        buildEdges(graph).forEach(graphvizBuilder::addEdge);
 
         final PrintWriter out = new PrintWriter("abc.dot", StandardCharsets.UTF_8);
         out.print(graphvizBuilder.build());
         out.close();
     }
 
-    private GraphvizCluster buildCluster(Bean<SubGraph> root) {
+    private GraphvizCluster buildCluster(String name, Graph graph) {
         final int clusterId = nextClusterId.getAndIncrement();
-        final List<GraphvizNode> nodes = new ArrayList<>();
-        final List<GraphvizCluster> clusters = new ArrayList<>();
+        final List<Bean<?>> beans = graph.getInjector().getExistingBeans();
+        final List<GraphvizNode> nodes = beans.stream()
+                .map(bean -> buildNode(bean, clusterId))
+                .collect(Collectors.toList());
+        final List<GraphvizCluster> clusters = graph.getSubGraphsByQualifiers().entrySet().stream()
+                .map(qualifierAndSubGraph -> buildCluster(qualifierAndSubGraph.getKey().getSimpleName(), qualifierAndSubGraph.getValue()))
+                .collect(Collectors.toList());
 
-        nodes.add(buildNode(root, clusterId));
-
-        for (Bean<?> bean : root.getInstance().getGraph().getInjector().getExistingBeans()) {
-            if (bean.getInstance() instanceof SubGraph) {
-                clusters.add(buildCluster((Bean<SubGraph>) bean));
-            } else {
-                nodes.add(buildNode(bean, clusterId));
-            }
-        }
-
-        return new GraphvizCluster(clusterId, "Cluster", nodes, clusters);
+        return new GraphvizCluster(clusterId, name, nodes, clusters);
     }
 
     private GraphvizNode buildNode(Bean<?> bean, Integer clusterId) {
@@ -86,23 +79,18 @@ public class GraphPainter {
         return label.toString();
     }
 
-    private List<GraphvizEdge> buildEdges(List<Bean<?>> beans) {
-        return beans.stream()
-                .map(this::buildEdges)
-                .flatMap(Collection::stream)
-                .collect(Collectors.toList());
+    private List<GraphvizEdge> buildEdges(Graph graph) {
+        final List<GraphvizEdge> result = new ArrayList<>();
+        graph.getInjector().getExistingBeans().forEach(bean -> result.addAll(buildEdges(bean)));
+        graph.getSubGraphs().forEach(subGraph -> result.addAll(buildEdges(subGraph)));
+        return result;
     }
 
     private List<GraphvizEdge> buildEdges(Bean<?> bean) {
         final List<GraphvizEdge> result = new ArrayList<>();
-        if (bean.getInstance() instanceof SubGraph) {
-            final List<Bean<?>> beans = ((SubGraph) bean.getInstance()).getGraph().getInjector().getExistingBeans();
-            result.addAll(buildEdges(beans));
-        } else {
-            final int nodeId = beansToNodesIds.get(bean);
-            for (Bean<?> dependency : bean.getDependencies()) {
-                result.add(new GraphvizEdge(nodeId, beansToNodesIds.get(dependency), beansToClustersIds.get(dependency)));
-            }
+        final int nodeId = beansToNodesIds.get(bean);
+        for (Bean<?> dependency : bean.getDependencies()) {
+            result.add(new GraphvizEdge(nodeId, beansToNodesIds.get(dependency), beansToClustersIds.get(dependency)));
         }
 
         return result;

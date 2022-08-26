@@ -26,6 +26,12 @@ public class Injector {
         this.bindings = new ArrayList<>();
     }
 
+    protected Injector(Injector parentInjector, BeanFactory beanFactory) {
+        this.parentInjector = parentInjector;
+        this.beanFactory = beanFactory;
+        this.bindings = new ArrayList<>();
+    }
+
     public <T> void bind(Object instance) {
         final ObjectAndType<T> objectAndType = ClassUtils.getObjectAndType(instance);
         bind(objectAndType.getType()).toInstance(objectAndType.getObject());

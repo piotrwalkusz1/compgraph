@@ -1,15 +1,16 @@
 package com.piotrwalkusz.compgraph.example;
 
 import com.piotrwalkusz.compgraph.Graph;
-import com.piotrwalkusz.compgraph.example.graph.AdditionalTaxes2021;
-import com.piotrwalkusz.compgraph.example.graph.AdditionalTaxes2022;
 import com.piotrwalkusz.compgraph.example.input.CalculationDate;
 import com.piotrwalkusz.compgraph.example.input.Income;
 import com.piotrwalkusz.compgraph.example.input.TaxpayerId;
+import com.piotrwalkusz.compgraph.example.input.Year;
 import com.piotrwalkusz.compgraph.example.node.IncomeTax;
 import com.piotrwalkusz.compgraph.example.qualifier.PreviousYear;
 import com.piotrwalkusz.compgraph.example.service.BillServiceImpl;
 import com.piotrwalkusz.compgraph.example.service.TaxService;
+import com.piotrwalkusz.compgraph.example.subgraph.Year2021;
+import com.piotrwalkusz.compgraph.example.subgraph.Year2022;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
@@ -27,8 +28,8 @@ public class ExampleTest {
                 .addInput(new IncomeTax(BigDecimal.valueOf(1200)), PreviousYear.class)
                 .addInput(new TaxService())
                 .addInput(new BillServiceImpl())
-                .addSubGraph(new AdditionalTaxes2021())
-                .addSubGraph(new AdditionalTaxes2022());
+                .addSubGraph(Year2021.class, subGraph -> subGraph.addInput(new Year(2021)))
+                .addSubGraph(Year2022.class, subGraph -> subGraph.addInput(new Year(2022)));
 
         graph.evaluate(IncomeTax.class);
     }
@@ -43,8 +44,8 @@ public class ExampleTest {
                 .addInput(new IncomeTax(BigDecimal.valueOf(1200)), PreviousYear.class)
                 .addInput(new TaxService())
                 .addInput(new BillServiceImpl())
-                .addSubGraph(new AdditionalTaxes2021())
-                .addSubGraph(new AdditionalTaxes2022());
+                .addSubGraph(Year2021.class, subGraph -> subGraph.addInput(new Year(2021)))
+                .addSubGraph(Year2022.class, subGraph -> subGraph.addInput(new Year(2022)));
 
         graph.evaluate(IncomeTax.class);
         graph.draw();

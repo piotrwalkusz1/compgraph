@@ -6,12 +6,8 @@ import com.piotrwalkusz.compgraph.injector.KeyMatcher;
 
 public class GraphInjector extends Injector {
 
-    public GraphInjector() {
-        super();
-    }
-
-    public GraphInjector(GraphInjector parentGraph) {
-        super(parentGraph);
+    public GraphInjector(Graph graph, GraphInjector parentGraph) {
+        super(parentGraph, new GraphBeanFactory(graph));
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.piotrwalkusz.compgraph.example.node;
 
 import com.piotrwalkusz.compgraph.Node;
-import com.piotrwalkusz.compgraph.example.graph.AdditionalTaxes2021;
-import com.piotrwalkusz.compgraph.example.graph.AdditionalTaxes2022;
 import com.piotrwalkusz.compgraph.example.input.Income;
 import com.piotrwalkusz.compgraph.example.qualifier.PreviousYear;
+import com.piotrwalkusz.compgraph.example.subgraph.Year2021;
+import com.piotrwalkusz.compgraph.example.subgraph.Year2022;
 import lombok.NoArgsConstructor;
 
 import javax.inject.Inject;
@@ -34,10 +34,12 @@ public class IncomeTax extends Node<BigDecimal> {
     private IncomeUnpaidBillsAmount incomeUnpaidBillsAmount;
 
     @Inject
-    private AdditionalTaxes2021 additionalTaxes2021;
+    @Year2021
+    private AdditionalIncomeTax additionalIncomeTax2021;
 
     @Inject
-    private AdditionalTaxes2022 additionalTaxes2022;
+    @Year2022
+    private AdditionalIncomeTax additionalIncomeTax2022;
 
     @Override
     protected BigDecimal evaluate() {
@@ -46,8 +48,8 @@ public class IncomeTax extends Node<BigDecimal> {
                 .subtract(incomeTaxCredit.getValue())
                 .max(BigDecimal.ZERO)
                 .add(incomeUnpaidBillsAmount.evaluate())
-                .add(additionalTaxes2021.getAdditionalIncomeTax())
-                .add(additionalTaxes2022.getAdditionalIncomeTax());
+                .add(additionalIncomeTax2021.getValue())
+                .add(additionalIncomeTax2022.getValue());
         if (incomeTax.compareTo(BigDecimal.ZERO) == 0 && incomeTaxInPreviousYear.getValue().compareTo(BigDecimal.ZERO) == 0) {
             return BigDecimal.valueOf(1000.0);
         }

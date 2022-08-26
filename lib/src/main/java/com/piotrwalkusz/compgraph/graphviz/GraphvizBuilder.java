@@ -40,9 +40,10 @@ public class GraphvizBuilder {
         content.append("digraph G {");
         newLine();
         indentation++;
-        indent();
-        content.append("compound=\"true\"");
-        newLine();
+        // TODO
+//        indent();
+//        content.append("compound=\"true\"");
+//        newLine();
     }
 
     private void endGraph() {
@@ -95,9 +96,12 @@ public class GraphvizBuilder {
         content.append(" {");
         newLine();
         indentation++;
+        indent();
+        content.append("label=\"");
+        content.append(cluster.getLabel());
+        content.append("\"");
         appendNodes(cluster.getNodes());
         appendClusters(cluster.getClusters());
-        newLine();
         indentation--;
         indent();
         content.append("}");

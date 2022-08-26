@@ -44,15 +44,19 @@ public class BeanFactory {
 
     @SneakyThrows
     private Bean<?> injectToField(Object object, Field field) {
-        final KeyMatcher<?> keyMatcher = getKeyMatcher(field);
-        final Bean<?> bean = injector.getBean(keyMatcher);
+        final Bean<?> bean = getBeanToInjectToField(field);
         field.setAccessible(true);
         field.set(object, bean.getInstance());
 
         return bean;
     }
 
-    private KeyMatcher<?> getKeyMatcher(Field field) {
+    protected Bean<?> getBeanToInjectToField(Field field) {
+        final KeyMatcher<?> keyMatcher = getKeyMatcher(field);
+        return injector.getBean(keyMatcher);
+    }
+
+    protected KeyMatcher<?> getKeyMatcher(Field field) {
         final Optional<Annotation> qualifierAnnotation = getQualifierAnnotation(field);
         return qualifierAnnotation
                 .map(annotation -> new KeyMatcher<>(field.getType(), annotation.annotationType()))
