@@ -48,6 +48,6 @@ public class ExampleTest {
                 .addSubgraph(Year2022.class, subgraph -> subgraph.addInput(new Year(2022)));
 
         graph.evaluate(IncomeTax.class);
-        graph.draw();
+//        graph.draw();
     }
 }

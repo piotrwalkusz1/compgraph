@@ -9,25 +9,23 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class GraphBeanFactory extends BeanFactory {
 
-    private final Graph graph;
-
-    public GraphBeanFactory(Graph graph) {
-        super(graph.getInjector());
-        this.graph = graph;
+    public GraphBeanFactory(GraphInjector injector) {
+        super(injector);
     }
 
     @Override
     protected Bean<?> getBeanToInjectToField(Field field) {
         final List<Class<? extends Annotation>> subgraphQualifiers = new ArrayList<>(getSubgraphQualifiers(field));
-        final AtomicReference<Graph> selectedGraph = new AtomicReference<>(graph);
+        GraphInjector selectedInjector = (GraphInjector) injector;
         while (!subgraphQualifiers.isEmpty()) {
+            final Map<Class<? extends Annotation>, Graph> subgraphsByQualifiers = selectedInjector.getSubgraphContainer().getSubgraphsByQualifiers();
             final List<Class<? extends Annotation>> matchedSubgraphQualifiers = subgraphQualifiers.stream()
-                    .filter(subgraphQualifier -> selectedGraph.get().getSubgraph(subgraphQualifier) != null)
+                    .filter(subgraphsByQualifiers::containsKey)
                     .collect(Collectors.toList());
             if (matchedSubgraphQualifiers.size() > 1) {
                 // TODO
@@ -37,12 +35,12 @@ public class GraphBeanFactory extends BeanFactory {
                 // TODO
                 throw new IllegalArgumentException("No sub graph");
             }
-            selectedGraph.set(selectedGraph.get().getSubgraph(matchedSubgraphQualifiers.get(0)));
+            selectedInjector = selectedInjector.getSubgraphContainer().getSubgraph(matchedSubgraphQualifiers.get(0)).getInjector();
             subgraphQualifiers.remove(matchedSubgraphQualifiers.get(0));
         }
 
         final KeyMatcher<?> keyMatcher = getKeyMatcher(field);
-        return selectedGraph.get().getInjector().getBean(keyMatcher);
+        return selectedInjector.getBean(keyMatcher);
     }
 
     private List<Class<? extends Annotation>> getSubgraphQualifiers(Field field) {

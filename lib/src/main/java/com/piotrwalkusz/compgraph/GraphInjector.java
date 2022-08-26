@@ -3,11 +3,16 @@ package com.piotrwalkusz.compgraph;
 import com.piotrwalkusz.compgraph.injector.Binding;
 import com.piotrwalkusz.compgraph.injector.Injector;
 import com.piotrwalkusz.compgraph.injector.KeyMatcher;
+import lombok.Getter;
 
 public class GraphInjector extends Injector {
 
-    public GraphInjector(Graph graph, GraphInjector parentGraph) {
-        super(parentGraph, new GraphBeanFactory(graph));
+    @Getter
+    private final SubgraphContainer subgraphContainer = new SubgraphContainer();
+
+    public GraphInjector(GraphInjector parentInjector) {
+        super(parentInjector);
+        setBeanFactory(new GraphBeanFactory(this));
     }
 
     @Override

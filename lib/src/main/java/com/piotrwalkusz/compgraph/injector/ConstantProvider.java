@@ -1,7 +1,5 @@
-package com.piotrwalkusz.compgraph.injector.provider;
+package com.piotrwalkusz.compgraph.injector;
 
-import com.piotrwalkusz.compgraph.injector.Bean;
-import com.piotrwalkusz.compgraph.injector.BeanProvider;
 import lombok.AllArgsConstructor;
 
 import java.util.Optional;

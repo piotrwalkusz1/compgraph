@@ -1,7 +1,5 @@
 package com.piotrwalkusz.compgraph.injector;
 
-import com.piotrwalkusz.compgraph.injector.provider.ConstantProvider;
-import com.piotrwalkusz.compgraph.injector.provider.CreatingProvider;
 import lombok.AllArgsConstructor;
 
 @AllArgsConstructor

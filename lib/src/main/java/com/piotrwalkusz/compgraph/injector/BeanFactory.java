@@ -22,7 +22,7 @@ public class BeanFactory {
     protected final Injector injector;
 
     @SneakyThrows
-    public <T> Bean<T> createBean(Class<T> type) {
+    public final <T> Bean<T> createBean(Class<T> type) {
         final Constructor<T> constructor = getPublicNoArgsConstructor(type);
         final T instance = constructor.newInstance();
         final List<Bean<?>> dependencies = injectToFields(type, instance);
@@ -56,7 +56,7 @@ public class BeanFactory {
         return injector.getBean(keyMatcher);
     }
 
-    protected KeyMatcher<?> getKeyMatcher(Field field) {
+    protected final KeyMatcher<?> getKeyMatcher(Field field) {
         final Optional<Annotation> qualifierAnnotation = getQualifierAnnotation(field);
         if (qualifierAnnotation.isPresent()) {
             return KeyMatcher.of(field.getType(), qualifierAnnotation.get().annotationType());
