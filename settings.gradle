@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'compgraph'
-include('lib', 'examples:simple')
+include('lib', 'examples:simple', 'examples:subgraphs')

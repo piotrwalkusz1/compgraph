@@ -1,8 +1,8 @@
-package com.piotrwalkusz.compgraph.examples.simple.node;
+package com.piotrwalkusz.compgraph.examples.subgraphs.node;
 
 import com.piotrwalkusz.compgraph.Node;
-import com.piotrwalkusz.compgraph.examples.simple.input.NetAmount;
-import com.piotrwalkusz.compgraph.examples.simple.input.TaxAmount;
+import com.piotrwalkusz.compgraph.examples.subgraphs.input.NetAmount;
+import com.piotrwalkusz.compgraph.examples.subgraphs.input.TaxAmount;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
