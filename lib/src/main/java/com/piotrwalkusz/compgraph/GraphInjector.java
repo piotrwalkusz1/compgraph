@@ -10,6 +10,10 @@ public class GraphInjector extends Injector {
     @Getter
     private final SubgraphContainer subgraphContainer = new SubgraphContainer();
 
+    public GraphInjector() {
+        this(null);
+    }
+
     public GraphInjector(GraphInjector parentInjector) {
         super(parentInjector);
         setBeanFactory(new GraphBeanFactory(this));
@@ -20,6 +24,6 @@ public class GraphInjector extends Injector {
         if (Node.class.isAssignableFrom(keyMatcher.getType()) && keyMatcher.getAnnotationType() == null) {
             return super.createJustInTimeBinding(keyMatcher);
         }
-        throw new IllegalArgumentException(String.format("Cannot create instance of type %s. Only instance of Node can be created.", keyMatcher.getType()));
+        throw GraphException.justInTimeBindingNotSupportedForClass(keyMatcher.getType());
     }
 }

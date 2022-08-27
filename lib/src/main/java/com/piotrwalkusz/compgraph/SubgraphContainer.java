@@ -14,7 +14,7 @@ public class SubgraphContainer {
 
     public void addSubgraph(Class<? extends Annotation> subgraphQualifier, Graph subgraph) {
         if (!ReflectionUtils.hasAnnotation(subgraphQualifier, List.of(SubgraphQualifier.class))) {
-            throw new IllegalArgumentException("Annotation must have meta annotation @SubgraphQualifier");
+            throw GraphException.invalidSubgraphQualifier(subgraphQualifier);
         }
         subgraphs.put(subgraphQualifier, subgraph);
     }

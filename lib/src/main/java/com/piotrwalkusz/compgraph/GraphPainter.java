@@ -5,10 +5,7 @@ import com.piotrwalkusz.compgraph.graphviz.GraphvizCluster;
 import com.piotrwalkusz.compgraph.graphviz.GraphvizEdge;
 import com.piotrwalkusz.compgraph.graphviz.GraphvizNode;
 import com.piotrwalkusz.compgraph.injector.Bean;
-import lombok.SneakyThrows;
 
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -16,7 +13,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
-public class GraphPainter {
+public final class GraphPainter {
 
     private final Graph graph;
     private final GraphvizBuilder graphvizBuilder = new GraphvizBuilder();
@@ -28,16 +25,13 @@ public class GraphPainter {
         this.graph = graph;
     }
 
-    @SneakyThrows
-    public void draw() {
+    public final String draw() {
         final List<Bean<?>> beans = graph.getInjector().getExistingBeans();
         beans.forEach(bean -> graphvizBuilder.addNode(buildNode(bean)));
         graph.getSubgraphsByQualifiers().forEach((qualifier, subgraph) -> graphvizBuilder.addCluster(buildCluster(qualifier.getSimpleName(), subgraph)));
         buildEdges(graph).forEach(graphvizBuilder::addEdge);
 
-        final PrintWriter out = new PrintWriter("abc.dot", StandardCharsets.UTF_8);
-        out.print(graphvizBuilder.build());
-        out.close();
+        return graphvizBuilder.build();
     }
 
     private GraphvizCluster buildCluster(String name, Graph graph) {
@@ -80,7 +74,7 @@ public class GraphPainter {
         return result;
     }
 
-    protected String escapeHtml(String string) {
+    protected final String escapeHtml(String string) {
         return string.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;");
     }
 }

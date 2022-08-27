@@ -24,6 +24,7 @@ public class ReflectionUtils {
         return result;
     }
 
+    @SuppressWarnings("unchecked")
     public static <T> Optional<Constructor<T>> getPublicNoArgsConstructor(Class<T> type) {
         return Arrays.stream(type.getConstructors())
                 .filter(constructor -> constructor.getParameterCount() == 0)

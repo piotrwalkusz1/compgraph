@@ -12,7 +12,7 @@ public final class BindingContainer {
     public final <T> Optional<Binding<? extends T>> getBinding(KeyMatcher<T> keyMatcher) {
         final List<Binding<? extends T>> bindings = getBindings(keyMatcher);
         if (bindings.size() > 1) {
-            throw InjectorExceptions.foundMoreThanOneBinding(keyMatcher, bindings);
+            throw InjectorException.foundMoreThanOneBinding(keyMatcher, bindings);
         }
         return bindings.stream().findFirst();
     }

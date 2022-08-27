@@ -46,7 +46,7 @@ class BeanFactoryTest {
         final InjectorException exception = assertThrows(InjectorException.class, () -> beanFactory.createBean(ClassWithFieldWithTwoQualifiers.class));
 
         assertEquals(
-                "Field \"String value\" in class ClassWithFieldWithTwoQualifiers has more than one qualifier annotation. Detected 2 qualifier annotations: FirstQualifier, SecondQualifier.",
+                "Field \"String value\" in class ClassWithFieldWithTwoQualifiers has more than one qualifier annotation. Detected 2 qualifier annotations: [FirstQualifier, SecondQualifier].",
                 exception.getMessage()
         );
     }

@@ -17,7 +17,7 @@ class BindingContainerTest {
         final InjectorException exception = assertThrows(InjectorException.class, () -> bindingContainer.getBinding(KeyMatcher.of(String.class)));
 
         assertEquals(
-                "Found more than one binding for {type: java.lang.String, annotationType: null}. Found 2 bindings: {key: {type: java.lang.String, annotationType: null}, provider: <instance of java.lang.String>}, {key: {type: java.lang.String, annotationType: null}, provider: <provider of java.lang.String>}.",
+                "Found more than one binding for {type: java.lang.String, annotationType: null}. Found 2 bindings: [{key: {type: java.lang.String, annotationType: null}, provider: <instance of java.lang.String>}, {key: {type: java.lang.String, annotationType: null}, provider: <provider of java.lang.String>}].",
                 exception.getMessage()
         );
     }

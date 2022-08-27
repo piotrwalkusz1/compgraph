@@ -67,7 +67,7 @@ public class BeanFactory {
     private Optional<Annotation> getQualifierAnnotation(Field field) {
         final List<Annotation> qualifierAnnotations = ReflectionUtils.getAnnotationsWithAnyMetaAnnotation(field, SUPPORTED_QUALIFIER_ANNOTATIONS);
         if (qualifierAnnotations.size() > 1) {
-            throw InjectorExceptions.fieldHasMoreThanOneQualifier(field, qualifierAnnotations);
+            throw InjectorException.fieldHasMoreThanOneQualifier(field, qualifierAnnotations);
         }
 
         return qualifierAnnotations.stream()
@@ -76,6 +76,6 @@ public class BeanFactory {
 
     private <T> Constructor<T> getPublicNoArgsConstructor(Class<T> type) {
         return ReflectionUtils.getPublicNoArgsConstructor(type)
-                .orElseThrow(() -> InjectorExceptions.noPublicNoArgsConstructor(type));
+                .orElseThrow(() -> InjectorException.noPublicNoArgsConstructor(type));
     }
 }

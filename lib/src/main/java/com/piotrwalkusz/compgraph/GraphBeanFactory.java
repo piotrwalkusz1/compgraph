@@ -12,14 +12,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class GraphBeanFactory extends BeanFactory {
+public final class GraphBeanFactory extends BeanFactory {
 
     public GraphBeanFactory(GraphInjector injector) {
         super(injector);
     }
 
     @Override
-    protected Bean<?> getBeanToInjectToField(Field field) {
+    protected final Bean<?> getBeanToInjectToField(Field field) {
         final List<Class<? extends Annotation>> subgraphQualifiers = new ArrayList<>(getSubgraphQualifiers(field));
         GraphInjector selectedInjector = (GraphInjector) injector;
         while (!subgraphQualifiers.isEmpty()) {
@@ -28,12 +28,10 @@ public class GraphBeanFactory extends BeanFactory {
                     .filter(subgraphsByQualifiers::containsKey)
                     .collect(Collectors.toList());
             if (matchedSubgraphQualifiers.size() > 1) {
-                // TODO
-                throw new IllegalArgumentException("Too many sub graphs.");
+                throw GraphException.ambiguousSubgraphQualifiers(field, matchedSubgraphQualifiers);
             }
             if (matchedSubgraphQualifiers.isEmpty()) {
-                // TODO
-                throw new IllegalArgumentException("No sub graph");
+                throw GraphException.noSubgraphMatchesSubgraphQualifiers(field, subgraphQualifiers);
             }
             selectedInjector = selectedInjector.getSubgraphContainer().getSubgraph(matchedSubgraphQualifiers.get(0)).getInjector();
             subgraphQualifiers.remove(matchedSubgraphQualifiers.get(0));

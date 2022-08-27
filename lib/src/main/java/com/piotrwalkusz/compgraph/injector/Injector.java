@@ -113,12 +113,12 @@ public class Injector {
             try {
                 return parentInjector.createJustInTimeBinding(keyMatcher);
             } catch (Exception exception) {
-                // TODO: Add specific exception instead of "Exception"
+                // The parent injector failed to create a binding
             }
         }
 
         final CreatingProvider<T> provider = new CreatingProvider<>(keyMatcher.getType(), this);
-        // Invoke Provider.get() to check if instance can be created successfully
+        // Invoke Provider.get() to check if an instance can be created successfully
         provider.get();
         final Binding<T> binding = new Binding<T>(keyMatcher.getKeyThatSatisfyMatcher(), provider);
         bindingContainer.addBinding(binding);
