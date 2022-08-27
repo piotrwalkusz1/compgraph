@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.Setter;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
 public class Injector {
 
     private final Injector parentInjector;
-    private final List<Binding<?>> bindings;
+    private final BindingContainer bindingContainer;
     @Setter(AccessLevel.PROTECTED)
     private BeanFactory beanFactory;
 
@@ -22,7 +21,7 @@ public class Injector {
 
     public Injector(Injector parentInjector) {
         this.parentInjector = parentInjector;
-        this.bindings = new ArrayList<>();
+        this.bindingContainer = new BindingContainer();
         this.beanFactory = new BeanFactory(this);
     }
 
@@ -41,10 +40,6 @@ public class Injector {
 
     public final <T> Binder<T> bind(Class<T> type, Class<? extends Annotation> annotationType) {
         return new Binder<>(Key.of(type, annotationType), this);
-    }
-
-    final void addBinding(Binding<?> binding) {
-        bindings.add(binding);
     }
 
     public final <T> T getInstance(Class<T> type) {
@@ -94,22 +89,19 @@ public class Injector {
     }
 
     public final <T> Optional<Binding<? extends T>> getExistingBinding(KeyMatcher<T> keyMatcher) {
-        final List<Binding<? extends T>> bindings = getExistingBindings(keyMatcher);
-        if (bindings.size() > 1) {
-            throw new IllegalArgumentException("Found more than one binding for key matcher " + keyMatcher);
-        }
-        return bindings.stream().findFirst();
+        return bindingContainer.getBinding(keyMatcher);
     }
 
     public final List<Binding<?>> getExistingBindings() {
-        return getExistingBindings(null);
+        return bindingContainer.getBindings();
     }
 
     public final <T> List<Binding<? extends T>> getExistingBindings(KeyMatcher<T> keyMatcher) {
-        return bindings.stream()
-                .filter(binding -> keyMatcher == null || keyMatcher.match(binding.getKey()))
-                .map(binding -> (Binding<? extends T>) binding)
-                .collect(Collectors.toList());
+        return bindingContainer.getBindings(keyMatcher);
+    }
+
+    final void addBinding(Binding<?> binding) {
+        bindingContainer.addBinding(binding);
     }
 
     public final <T> Bean<T> createNewBean(Class<T> type) {
@@ -129,7 +121,7 @@ public class Injector {
         // Invoke Provider.get() to check if instance can be created successfully
         provider.get();
         final Binding<T> binding = new Binding<T>(keyMatcher.getKeyThatSatisfyMatcher(), provider);
-        bindings.add(binding);
+        bindingContainer.addBinding(binding);
 
         return binding;
     }

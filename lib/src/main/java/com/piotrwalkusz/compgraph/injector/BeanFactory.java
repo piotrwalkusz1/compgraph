@@ -67,7 +67,7 @@ public class BeanFactory {
     private Optional<Annotation> getQualifierAnnotation(Field field) {
         final List<Annotation> qualifierAnnotations = ReflectionUtils.getAnnotationsWithAnyMetaAnnotation(field, SUPPORTED_QUALIFIER_ANNOTATIONS);
         if (qualifierAnnotations.size() > 1) {
-            throw new IllegalArgumentException("Detected more than one qualifier annotation");
+            throw InjectorExceptions.fieldHasMoreThanOneQualifier(field, qualifierAnnotations);
         }
 
         return qualifierAnnotations.stream()
@@ -76,6 +76,6 @@ public class BeanFactory {
 
     private <T> Constructor<T> getPublicNoArgsConstructor(Class<T> type) {
         return ReflectionUtils.getPublicNoArgsConstructor(type)
-                .orElseThrow(() -> new IllegalArgumentException(String.format("Type %s doesn't have public no args constructor", type.getCanonicalName())));
+                .orElseThrow(() -> InjectorExceptions.noPublicNoArgsConstructor(type));
     }
 }

@@ -22,11 +22,16 @@ public class KeyMatcher<T> {
         return new KeyMatcher<>(type, annotationType);
     }
 
-    public boolean match(Key<?> key) {
+    public final boolean match(Key<?> key) {
         return type.isAssignableFrom(key.getType()) && Objects.equals(annotationType, key.getAnnotationType());
     }
 
-    public Key<T> getKeyThatSatisfyMatcher() {
+    public final Key<T> getKeyThatSatisfyMatcher() {
         return Key.of(type, annotationType);
+    }
+
+    @Override
+    public final String toString() {
+        return String.format("{type: %s, annotationType: %s}", type.getCanonicalName(), annotationType == null ? null : annotationType.getCanonicalName());
     }
 }

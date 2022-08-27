@@ -7,4 +7,9 @@ public class Binding<T> {
 
     Key<T> key;
     BeanProvider<? extends T> provider;
+
+    @Override
+    public final String toString() {
+        return String.format("{key: %s, provider: %s}", key, provider);
+    }
 }

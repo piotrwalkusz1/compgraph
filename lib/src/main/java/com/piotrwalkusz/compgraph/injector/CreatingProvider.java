@@ -14,7 +14,7 @@ public final class CreatingProvider<T> implements BeanProvider<T> {
     }
 
     @Override
-    public Bean<? extends T> get() {
+    public final Bean<? extends T> get() {
         if (bean == null) {
             bean = injector.createNewBean(type);
         }
@@ -22,7 +22,12 @@ public final class CreatingProvider<T> implements BeanProvider<T> {
     }
 
     @Override
-    public Optional<Bean<? extends T>> getExistingBean() {
+    public final Optional<Bean<? extends T>> getExistingBean() {
         return Optional.ofNullable(bean);
+    }
+
+    @Override
+    public final String toString() {
+        return String.format("<provider of %s>", type.getCanonicalName());
     }
 }

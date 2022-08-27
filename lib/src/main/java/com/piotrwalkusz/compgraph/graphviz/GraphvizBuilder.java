@@ -13,19 +13,19 @@ public final class GraphvizBuilder {
     private StringBuilder content;
     private Integer indentation;
 
-    public void addNode(GraphvizNode node) {
+    public final void addNode(GraphvizNode node) {
         nodes.add(node);
     }
 
-    public void addEdge(GraphvizEdge edge) {
+    public final void addEdge(GraphvizEdge edge) {
         edges.add(edge);
     }
 
-    public void addCluster(GraphvizCluster subgraph) {
+    public final void addCluster(GraphvizCluster subgraph) {
         clusters.add(subgraph);
     }
 
-    public String build() {
+    public final String build() {
         content = new StringBuilder();
         indentation = 0;
         beginGraph();

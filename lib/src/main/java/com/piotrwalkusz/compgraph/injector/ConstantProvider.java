@@ -10,12 +10,17 @@ public final class ConstantProvider<T> implements BeanProvider<T> {
     private final Bean<T> bean;
 
     @Override
-    public Bean<? extends T> get() {
+    public final Bean<? extends T> get() {
         return bean;
     }
 
     @Override
-    public Optional<Bean<? extends T>> getExistingBean() {
+    public final Optional<Bean<? extends T>> getExistingBean() {
         return Optional.of(bean);
+    }
+
+    @Override
+    public final String toString() {
+        return String.format("<instance of %s>", bean.getInstance().getClass().getCanonicalName());
     }
 }

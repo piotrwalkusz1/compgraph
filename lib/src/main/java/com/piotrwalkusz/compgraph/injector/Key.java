@@ -20,4 +20,9 @@ public class Key<T> {
     public static <T> Key<T> of(Class<T> type, Class<? extends Annotation> annotationType) {
         return new Key<>(type, annotationType);
     }
+
+    @Override
+    public final String toString() {
+        return String.format("{type: %s, annotationType: %s}", type.getCanonicalName(), annotationType == null ? null : annotationType.getCanonicalName());
+    }
 }
