@@ -1,8 +1,8 @@
-package com.piotrwalkusz.compgraph.examples.complex.node;
+package com.piotrwalkusz.compgraph.benchmark.node;
 
+import com.piotrwalkusz.compgraph.benchmark.input.Year;
+import com.piotrwalkusz.compgraph.benchmark.service.TaxService;
 import com.piotrwalkusz.compgraph.Node;
-import com.piotrwalkusz.compgraph.examples.complex.input.Year;
-import com.piotrwalkusz.compgraph.examples.complex.service.TaxService;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;

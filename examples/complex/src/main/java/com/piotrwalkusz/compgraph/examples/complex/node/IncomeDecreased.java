@@ -7,17 +7,17 @@ import com.piotrwalkusz.compgraph.examples.complex.qualifier.PreviousYear;
 import javax.inject.Inject;
 import java.math.BigDecimal;
 
-public class IncomeIncrease extends Node<BigDecimal> {
+public class IncomeDecreased extends Node<Boolean> {
 
     @Inject
-    private Income income;
+    private Income incomeInCurrentYear;
 
     @Inject
     @PreviousYear
     private Income incomeInPreviousYear;
 
     @Override
-    protected BigDecimal evaluate() {
-        return income.getValue().subtract(incomeInPreviousYear.getValue());
+    protected Boolean evaluate() {
+        return incomeInCurrentYear.getValue().compareTo(incomeInPreviousYear.getValue()) < 0;
     }
 }

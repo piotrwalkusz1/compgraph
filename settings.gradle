@@ -10,6 +10,7 @@
 rootProject.name = 'compgraph'
 include(
         'lib',
+        'benchmark',
         'examples:simple',
         'examples:subgraphs',
         'examples:complex'

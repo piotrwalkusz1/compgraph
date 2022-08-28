@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class AppTest {
 
     @Test
-    void shouldCalculateIncomeTax() {
-        assertEquals("Income tax = 135.9", App.run());
+    void shouldCalculateTotalTax() {
+        assertEquals("Total tax = 37000.00", App.run());
     }
 }

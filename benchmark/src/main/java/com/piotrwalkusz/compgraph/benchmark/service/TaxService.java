@@ -1,4 +1,4 @@
-package com.piotrwalkusz.compgraph.examples.complex.service;
+package com.piotrwalkusz.compgraph.benchmark.service;
 
 import java.math.BigDecimal;
 

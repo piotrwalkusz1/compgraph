@@ -1,19 +1,17 @@
 package com.piotrwalkusz.compgraph.examples.complex;
 
 import com.piotrwalkusz.compgraph.Graph;
-import com.piotrwalkusz.compgraph.examples.complex.input.CalculationDate;
-import com.piotrwalkusz.compgraph.examples.complex.input.Income;
-import com.piotrwalkusz.compgraph.examples.complex.input.TaxpayerId;
-import com.piotrwalkusz.compgraph.examples.complex.input.Year;
-import com.piotrwalkusz.compgraph.examples.complex.node.IncomeTax;
+import com.piotrwalkusz.compgraph.examples.complex.input.*;
+import com.piotrwalkusz.compgraph.examples.complex.node.HouseTaxCredit;
+import com.piotrwalkusz.compgraph.examples.complex.node.TotalTax;
+import com.piotrwalkusz.compgraph.examples.complex.node.VehicleTaxCredit;
 import com.piotrwalkusz.compgraph.examples.complex.qualifier.PreviousYear;
-import com.piotrwalkusz.compgraph.examples.complex.service.BillServiceImpl;
+import com.piotrwalkusz.compgraph.examples.complex.service.BillService;
 import com.piotrwalkusz.compgraph.examples.complex.service.TaxService;
-import com.piotrwalkusz.compgraph.examples.complex.subgraph.Year2021;
-import com.piotrwalkusz.compgraph.examples.complex.subgraph.Year2022;
+import com.piotrwalkusz.compgraph.examples.complex.subgraph.House;
+import com.piotrwalkusz.compgraph.examples.complex.subgraph.Vehicle;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 public class App {
 
@@ -23,16 +21,22 @@ public class App {
 
     public static String run() {
         final Graph graph = new Graph()
-                .addInput(new CalculationDate(LocalDate.of(2022, 1, 1)))
-                .addInput(new Income(BigDecimal.valueOf(30000)))
-                .addInput(new TaxpayerId(12))
-                .addInput(new Income(BigDecimal.valueOf(1223)), PreviousYear.class)
-                .addInput(new IncomeTax(BigDecimal.valueOf(1200)), PreviousYear.class)
+                .addInput(new BillService())
                 .addInput(new TaxService())
-                .addInput(new BillServiceImpl())
-                .addSubgraph(Year2021.class, subgraph -> subgraph.addInput(new Year(2021)))
-                .addSubgraph(Year2022.class, subgraph -> subgraph.addInput(new Year(2022)));
+                .addInput(new ChildrenCount(2))
+                .addInput(new Income(BigDecimal.valueOf(100000)))
+                .addInput(new Income(BigDecimal.valueOf(110000)), PreviousYear.class)
+                .addInput(new TaxPayerId(2))
+                .addInput(new Year(2022))
+                .addSubgraph(House.class, subgraph -> subgraph
+                        .addInput(new PropertyValue(BigDecimal.valueOf(700000)))
+                        .addNode(HouseTaxCredit.class)
+                )
+                .addSubgraph(Vehicle.class, subgraph -> subgraph
+                        .addInput(new PropertyValue(BigDecimal.valueOf(900000)))
+                        .addNode(VehicleTaxCredit.class)
+                );
 
-        return String.format("Income tax = %s", graph.evaluate(IncomeTax.class));
+        return String.format("Total tax = %s", graph.evaluate(TotalTax.class));
     }
 }

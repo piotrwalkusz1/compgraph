@@ -7,5 +7,5 @@ import java.lang.annotation.RetentionPolicy;
 
 @SubgraphQualifier
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Year2021 {
+public @interface House {
 }

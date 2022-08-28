@@ -1,7 +1,7 @@
-package com.piotrwalkusz.compgraph.examples.complex.node;
+package com.piotrwalkusz.compgraph.benchmark.node;
 
 import com.piotrwalkusz.compgraph.Node;
-import com.piotrwalkusz.compgraph.examples.complex.input.ChildrenCount;
+import com.piotrwalkusz.compgraph.benchmark.input.ChildrenCount;
 
 import javax.inject.Inject;
 import java.math.BigDecimal;
